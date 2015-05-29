@@ -1,0 +1,19 @@
+#!/bin/bash
+
+TEMPLATE="{
+    \"api.version\": \"v1\",
+    \"sources\": [
+        {
+            \"sourceType\": \"LocalFile\",
+            \"name\": \"${SUMO_NAME}\",
+            \"pathExpression\": \"/tmp/clogs/events.log\",
+            \"category\": \"${SUMO_CATEGORY}\",
+            \"useAutolineMatching\": false,
+            \"multilineProcessingEnabled\": false
+        }
+    ]
+}"
+
+echo ${TEMPLATE} > /etc/sumo-sources.json
+
+source /run.sh "$@"
