@@ -3,6 +3,10 @@
 if [ -z ${SUMO_NAME} ] || [ -z ${SUMO_CATEGORY} ]; then
     echo "SUMO_NAME or SUMO_CATEGORY environment variable(s) not set, exiting"
     exit 1
+fi 
+
+if [  "true" != "${MULTILINE_PROCESSING}" ]; then
+    MULTILINE_PROCESSING="false"
 fi
 
 TEMPLATE="{
@@ -13,8 +17,8 @@ TEMPLATE="{
             \"name\": \"${SUMO_NAME}\",
             \"pathExpression\": \"/tmp/clogs/**/*.log\",
             \"category\": \"${SUMO_CATEGORY}\",
-            \"useAutolineMatching\": false,
-            \"multilineProcessingEnabled\": false
+            \"useAutolineMatching\": ${MULTILINE_PROCESSING},
+            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING}
         }
     ]
 }"
