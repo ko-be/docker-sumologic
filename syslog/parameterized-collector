@@ -17,12 +17,26 @@ TEMPLATE="{
     \"api.version\": \"v1\",
     \"sources\": [
         {
-            \"sourceType\": \"LocalFile\",
-            \"name\": \"${SUMO_NAME}\",
+            \"sourceType\": \"Syslog\",
+            \"name\": \"${SUMO_NAME}-TCP\",
             \"pathExpression\": \"$PATH_EXPRESSION\",
             \"category\": \"${SUMO_CATEGORY}\",
             \"useAutolineMatching\": ${MULTILINE_PROCESSING},
-            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING}
+            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING},
+            \"port\": 514,
+            \"protocol\": \"TCP\",
+            \"encoding\": \"UTF-8\"
+        },
+        {
+            \"sourceType\": \"Syslog\",
+            \"name\": \"${SUMO_NAME}-UDP\",
+            \"pathExpression\": \"$PATH_EXPRESSION\",
+            \"category\": \"${SUMO_CATEGORY}\",
+            \"useAutolineMatching\": ${MULTILINE_PROCESSING},
+            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING},
+            \"port\": 514,
+            \"protocol\": \"UDP\",
+            \"encoding\": \"UTF-8\"
         }
     ]
 }"
