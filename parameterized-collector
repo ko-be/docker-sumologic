@@ -9,13 +9,17 @@ if [  "true" != "${MULTILINE_PROCESSING}" ]; then
     MULTILINE_PROCESSING="false"
 fi
 
+if [ -z $PATH_EXPRESSION ]; then
+    PATH_EXPRESSION="/tmp/clogs/**/*.log"
+fi
+
 TEMPLATE="{
     \"api.version\": \"v1\",
     \"sources\": [
         {
             \"sourceType\": \"LocalFile\",
             \"name\": \"${SUMO_NAME}\",
-            \"pathExpression\": \"/tmp/clogs/**/*.log\",
+            \"pathExpression\": \"$PATH_EXPRESSION\",
             \"category\": \"${SUMO_CATEGORY}\",
             \"useAutolineMatching\": ${MULTILINE_PROCESSING},
             \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING}
