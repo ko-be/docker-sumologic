@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ -z ${SUMO_NAME} ] || [ -z ${SUMO_CATEGORY} ]; then
+    echo "SUMO_NAME or SUMO_CATEGORY environment variable(s) not set, exiting"
+    exit 1
+fi 
+
+if [  "true" != "${MULTILINE_PROCESSING}" ]; then
+    MULTILINE_PROCESSING="false"
+fi
+
+if [ -z $PATH_EXPRESSION ]; then
+    PATH_EXPRESSION="/tmp/clogs/**/*.log"
+fi
+
+TEMPLATE="{
+    \"api.version\": \"v1\",
+    \"sources\": [
+        {
+            \"sourceType\": \"LocalFile\",
+            \"name\": \"${SUMO_NAME}\",
+            \"pathExpression\": \"$PATH_EXPRESSION\",
+            \"category\": \"${SUMO_CATEGORY}\",
+            \"useAutolineMatching\": ${MULTILINE_PROCESSING},
+            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING}
+        }
+    ]
+}"
+
+echo "Writing /etc/sumo-sources.json:"
+echo "${TEMPLATE}"
+echo ${TEMPLATE} > /etc/sumo-sources.json
+
+echo "Starting sumologic..."
+echo "=================CONFIG==================="
+echo "SUMO_NAME            $SUMO_NAME"
+echo "SUMO_CATEGORY        $SUMO_CATEGORY"
+echo "PATH_EXPRESSION      $PATH_EXPRESSION"
+echo "MULTILINE_PROCESSING $MULTILINE_PROCESSING"
+echo "=========================================="
+
+source /run.sh "$@"
