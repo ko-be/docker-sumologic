@@ -32,4 +32,11 @@ echo "${TEMPLATE}"
 echo ${TEMPLATE} > /etc/sumo-sources.json
 
 echo "Starting sumologic..."
+echo "=================CONFIG==================="
+echo "SUMO_NAME            $SUMO_NAME"
+echo "SUMO_CATEGORY        $SUMO_CATEGORY"
+echo "PATH_EXPRESSION      $PATH_EXPRESSION"
+echo "MULTILINE_PROCESSING $MULTILINE_PROCESSING"
+echo "=========================================="
+
 source /run.sh "$@"
