@@ -8,6 +8,7 @@ These should always be explicitly set in your `docker run` command!
 
 - `SUMO_NAME` - name of the application
 - `SUMO_CATEGORY` - name of the category
+- `SUMO_HOSTNAME` - name of the host source
 - Anything else that the parent container [supports](https://github.com/SumoLogic/sumologic-collector-docker#environment-variables)
 
 Optional:
