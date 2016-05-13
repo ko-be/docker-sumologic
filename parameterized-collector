@@ -5,8 +5,8 @@ if [ -z ${SUMO_NAME} ] || [ -z ${SUMO_CATEGORY} ]; then
     exit 1
 fi 
 
-if [ -z ${SUMO_HOSTNAME} ]; then
-    $SUMO_HOSTNAME=$HOSTNAME
+if [ ! -z ${SUMO_HOSTNAME} ]; then
+    SUMO_HOSTNAME_LINE=$'\n'"            \"hostName\":\"${SUMO_HOSTNAME}\","
 fi
 
 if [  "true" != "${MULTILINE_PROCESSING}" ]; then
@@ -17,24 +17,23 @@ if [ -z $PATH_EXPRESSION ]; then
     PATH_EXPRESSION="/tmp/clogs/**/*.log"
 fi
 
-TEMPLATE="{
-    \"api.version\": \"v1\",
-    \"sources\": [
+echo "Writing /etc/sumo-sources.json:"
+
+cat >/etc/sumo-sources.json <<EOL
+{
+    "api.version": "v1",
+    "sources": [
         {
-            \"sourceType\": \"LocalFile\",
-            \"name\": \"${SUMO_NAME}\",
-            \"pathExpression\": \"$PATH_EXPRESSION\",
-            \"category\": \"${SUMO_CATEGORY}\",
-            \"hostName\":\"${SUMO_HOSTNAME}\",
-            \"useAutolineMatching\": ${MULTILINE_PROCESSING},
-            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING}
+            "sourceType": "LocalFile",
+            "name": "${SUMO_NAME}",
+            "pathExpression": "$PATH_EXPRESSION",
+            "category": "${SUMO_CATEGORY}",${SUMO_HOSTNAME_LINE}
+            "useAutolineMatching": "${MULTILINE_PROCESSING}",
+            "multilineProcessingEnabled": "${MULTILINE_PROCESSING}"
         }
     ]
-}"
-
-echo "Writing /etc/sumo-sources.json:"
-echo "${TEMPLATE}"
-echo ${TEMPLATE} > /etc/sumo-sources.json
+}
+EOL
 
 echo "Starting sumologic..."
 echo "=================CONFIG==================="
