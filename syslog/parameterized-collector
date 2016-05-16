@@ -5,6 +5,10 @@ if [ -z ${SUMO_NAME} ] || [ -z ${SUMO_CATEGORY} ]; then
     exit 1
 fi 
 
+if [ ! -z ${SUMO_HOSTNAME} ]; then
+    SUMO_HOSTNAME_LINE=$'\n'"            \"hostName\":\"${SUMO_HOSTNAME}\","
+fi
+
 if [  "true" != "${MULTILINE_PROCESSING}" ]; then
     MULTILINE_PROCESSING="false"
 fi
@@ -13,41 +17,42 @@ if [ -z $PATH_EXPRESSION ]; then
     PATH_EXPRESSION="/tmp/clogs/**/*.log"
 fi
 
-TEMPLATE="{
-    \"api.version\": \"v1\",
-    \"sources\": [
+echo "Writing /etc/sumo-sources.json:"
+
+cat >/etc/sumo-sources.json <<EOL
+{
+    "api.version": "v1",
+    "sources": [
         {
-            \"sourceType\": \"Syslog\",
-            \"name\": \"${SUMO_NAME}-TCP\",
-            \"pathExpression\": \"$PATH_EXPRESSION\",
-            \"category\": \"${SUMO_CATEGORY}\",
-            \"useAutolineMatching\": ${MULTILINE_PROCESSING},
-            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING},
-            \"port\": 514,
-            \"protocol\": \"TCP\",
-            \"encoding\": \"UTF-8\"
+            "sourceType": "Syslog",
+            "name": "${SUMO_NAME}-TCP",
+            "pathExpression": "$PATH_EXPRESSION",
+            "category": "${SUMO_CATEGORY}",${SUMO_HOSTNAME_LINE}
+            "useAutolineMatching": ${MULTILINE_PROCESSING},
+            "multilineProcessingEnabled": ${MULTILINE_PROCESSING},
+            "port": 514,
+            "protocol": "TCP",
+            "encoding": "UTF-8"
         },
         {
-            \"sourceType\": \"Syslog\",
-            \"name\": \"${SUMO_NAME}-UDP\",
-            \"pathExpression\": \"$PATH_EXPRESSION\",
-            \"category\": \"${SUMO_CATEGORY}\",
-            \"useAutolineMatching\": ${MULTILINE_PROCESSING},
-            \"multilineProcessingEnabled\": ${MULTILINE_PROCESSING},
-            \"port\": 514,
-            \"protocol\": \"UDP\",
-            \"encoding\": \"UTF-8\"
+            "sourceType": "Syslog",
+            "name": "${SUMO_NAME}-UDP",
+            "pathExpression": "$PATH_EXPRESSION",
+            "category": "${SUMO_CATEGORY}",${SUMO_HOSTNAME_LINE}
+            "useAutolineMatching": ${MULTILINE_PROCESSING},
+            "multilineProcessingEnabled": ${MULTILINE_PROCESSING},
+            "port": 514,
+            "protocol": "UDP",
+            "encoding": "UTF-8"
         }
     ]
-}"
-
-echo "Writing /etc/sumo-sources.json:"
-echo "${TEMPLATE}"
-echo ${TEMPLATE} > /etc/sumo-sources.json
+}
+EOL
 
 echo "Starting sumologic..."
 echo "=================CONFIG==================="
 echo "SUMO_NAME            $SUMO_NAME"
+echo "SUMO_HOSTNAME        $SUMO_HOSTNAME"
 echo "SUMO_CATEGORY        $SUMO_CATEGORY"
 echo "PATH_EXPRESSION      $PATH_EXPRESSION"
 echo "MULTILINE_PROCESSING $MULTILINE_PROCESSING"
